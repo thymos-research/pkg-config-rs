@@ -138,6 +138,8 @@ pub struct Library {
     pub defines: HashMap<String, Option<String>>,
     /// Version specified by .pc file's Version field
     pub version: String,
+    /// Machine dependent options specified using -m
+    pub machine_opts: Vec<String>,
     /// Ensure that this struct can only be created via its private `[Library::new]` constructor.
     /// Users of this crate can only access the struct via `[Config::probe]`.
     _priv: (),
@@ -798,6 +800,7 @@ impl Library {
             framework_paths: Vec::new(),
             defines: HashMap::new(),
             version: String::new(),
+            machine_opts: Vec::new(),
             _priv: (),
         }
     }
@@ -945,6 +948,9 @@ impl Library {
                 "-u" => {
                     let meta = format!("rustc-link-arg=-Wl,-u,{}", val);
                     config.print_metadata(&meta);
+                }
+                "-m" => {
+                    self.machine_opts.push(val.to_string());
                 }
                 _ => {}
             }
